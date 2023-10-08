@@ -143,9 +143,8 @@ pub enum Format {
 }
 
 #[cfg(feature = "std")]
-/// use FromStr trait to infer Format form a "string"
-/// Error returned if format is unknow
-///
+/// use TryFrom<T> trait to infer Format form a "String"
+/// Error returned if format is unknown
 impl TryFrom<String> for Format {
     type Error = String;
     fn try_from(value: String) -> Result<Self, Self::Error> {
