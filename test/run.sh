@@ -8,7 +8,7 @@ rm -f test/data/*.gz
 # Test all input cases individually so we can report which failed
 for input in test/data/*; do
 	printf "Compressing ${input}... "
-	env RUST_BACKTRACE=1 ./zopfli ${input} && echo "done"
+	env RUST_BACKTRACE=1 ./zopfli -o "gzip" -f ${input} && echo "done"
 done
 
 # Move newly compressed data to its own directory
