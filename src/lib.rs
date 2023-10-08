@@ -98,6 +98,9 @@ pub struct Options {
     ///
     /// Default value: 15.
     pub maximum_block_splits: u16,
+
+    /// activate verbose mode
+    pub verbose: bool,
 }
 
 impl Default for Options {
@@ -106,6 +109,7 @@ impl Default for Options {
             iteration_count: NonZeroU64::new(15).unwrap(),
             iterations_without_improvement: NonZeroU64::new(u64::MAX).unwrap(),
             maximum_block_splits: 15,
+            verbose: false,
         }
     }
 }
@@ -136,6 +140,26 @@ pub enum Format {
     /// usually are embedded in other file formats, such as gzip
     /// and zlib.
     Deflate,
+}
+
+#[cfg(feature = "std")]
+/// use FromStr trait to infer Format form a "string"
+/// Error returned if format is unknow
+///
+impl TryFrom<String> for Format {
+    type Error = String;
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        // Trim leading and trailing white spaces and convert to lowercase
+        let value = value.trim().to_lowercase();
+        match value.as_str() {
+            #[cfg(feature = "gzip")]
+            "gzip" => Ok(Format::Gzip),
+            #[cfg(feature = "zlib")]
+            "zlib" => Ok(Format::Zlib),
+            "deflate" => Ok(Format::Deflate),
+            _ => Err("Unknow format".into()),
+        }
+    }
 }
 
 /// Compresses data from a source with the Zopfli algorithm, using the specified
